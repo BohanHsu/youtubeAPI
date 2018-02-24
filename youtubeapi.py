@@ -7,12 +7,13 @@ import youtube_code as youtube
 import youtube_video_code as youtube_video
 import youtube_search_code as youtube_search
 import paths as path
+import parameter as parameter
 
-parts = 'snippet,contentDetails,statistics'
+#parts = 'snippet,contentDetails,statistics'
 
 #search_keyword = "facebook"
-def main(search_keyword):
-  max_result = 10
+def main(search_keyword, max_result, parts):
+  #max_result = 10
   service = youtube.get_authenticated_service()
   video_ids = youtube_search.youtube_search(service, {'q': search_keyword, 'max_results': max_result})
   videos = youtube_video.videos_list_multiple_ids(service, part=parts, id=video_ids)
@@ -139,8 +140,10 @@ def handle_filename(filename):
 
 
 if __name__ == '__main__':
-  search_keyword = "honda civic'9"
-  youtube_result = main(search_keyword)
+  search_keyword = parameter.SEARCH_KEY_WORDS
+  max_number = parameter.MAX_NUMBER
+  parts = parameter.PARTS
+  youtube_result = main(search_keyword, max_number, parts)
 
   result = handle_videos(youtube_result)
   csv = result_to_csv(result)
