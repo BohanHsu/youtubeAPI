@@ -1,3 +1,5 @@
+# Please make sure you run python and pip in 2 version (not 3)
+
 # How to start?
 
 Download code
@@ -7,7 +9,7 @@ Download code
 Install dependencies
 
     sudo python -m pip install --upgrade google-api-python-client
-    sudo pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
+    sudo python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 
 I don't have pip, [install it](https://pip.pypa.io/en/stable/installing/), super easy!
 
@@ -25,11 +27,11 @@ Edit parameter.py file:
     SEARCH_KEY_WORDS="facebook"
 
 ### How many videos' information you want to download for that keyword
-    MAX_NUMBER=20
+    MAX_NUMBER=50
     
 
 ### Run:
-    python youtubeapi.com
+    python youtubeapi.py
 
 **Open the link, login your google account, and paste the link back to python program, press Enter**
 
