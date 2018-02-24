@@ -3,7 +3,7 @@
 
 Download code
 
-    git clone
+    git clone https://github.com/BohanHsu/youtubeAPI.git
 
 Install dependencies
 
@@ -28,7 +28,6 @@ Edit parameter.py file:
 ### How many videos' information you want to download for that keyword
     MAX_NUMBER=20
     
-I don't understand what each column stands for: [read google api definition](https://developers.google.com/youtube/v3/docs/videos)
 
 ### Run:
     python youtubeapi.com
@@ -36,3 +35,5 @@ I don't understand what each column stands for: [read google api definition](htt
 **Open the link, login your google account, and paste the link back to python program, press Enter**
 
 ### Look for new csv file generated in your root directory.
+
+I don't understand what each column stands for: [read google api definition](https://developers.google.com/youtube/v3/docs/videos)
