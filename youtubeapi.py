@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import io
-
-
 import youtube_code as youtube
 import youtube_video_code as youtube_video
 import youtube_search_code as youtube_search
 import paths as path
 import parameter as parameter
 
-#parts = 'snippet,contentDetails,statistics'
-
-#search_keyword = "facebook"
 def main(search_keyword, max_result, parts):
-  #max_result = 10
+  videos = single_search(search_keyword, max_result, parts)
+  result = handle_videos(videos)
+  csv = result_to_csv(result)
+
+  write_csv(handle_filename(search_keyword), csv)
+  return handle_filename(search_keyword)
+
+def single_search(search_keyword, max_result, parts):
   service = youtube.get_authenticated_service()
-  video_ids = youtube_search.youtube_search(service, {'q': search_keyword, 'max_results': max_result})
+  video_ids = youtube_search.youtube_search(service, {
+    'q': search_keyword, 
+    'max_results': max_result,
+  })
   videos = youtube_video.videos_list_multiple_ids(service, part=parts, id=video_ids)
   return videos
 
@@ -96,7 +101,8 @@ def handle_video_result(video):
         plain_video[p] = current_result
 
     else:
-      print 'remove!', p
+      pass
+      #print 'remove!', p
 
   for k in plain_video:
     plain_video[k] = handle_string(plain_video[k])
@@ -143,14 +149,17 @@ if __name__ == '__main__':
   search_keyword = parameter.SEARCH_KEY_WORDS
   max_number = parameter.MAX_NUMBER
   parts = parameter.PARTS
+
+
   youtube_result = main(search_keyword, max_number, parts)
+  print youtube_result
 
-  result = handle_videos(youtube_result)
-  csv = result_to_csv(result)
+  #result = handle_videos(youtube_result)
+  #csv = result_to_csv(result)
 
-  for string in result['id']:
-    print string
+  #for string in result['id']:
+  #  print string
 
-  print len(csv)
-  write_csv(handle_filename(search_keyword), csv)
+  #print len(csv)
+  #write_csv(handle_filename(search_keyword), csv)
 
