@@ -1,3 +1,8 @@
+# Search By LOCATION!!!!!!!
+Open the parameter.py file
+See the new LOCATION and LOCATION_RADIUS parameter
+Search location and locationRadius in the [link](https://developers.google.com/youtube/v3/docs/search/list)
+
 # Please make sure you run python and pip in 2 version (not 3)
 
 # How to start?

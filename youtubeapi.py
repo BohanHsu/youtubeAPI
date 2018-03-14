@@ -7,7 +7,7 @@ import youtube_search_code as youtube_search
 import paths as path
 import parameter as parameter
 
-def main(search_keyword, max_result, parts):
+def main(search_keyword, max_result, parts, location=None, location_radius=None):
   videos = single_search(search_keyword, max_result, parts)
   result = handle_videos(videos)
   csv = result_to_csv(result)
@@ -149,17 +149,13 @@ if __name__ == '__main__':
   search_keyword = parameter.SEARCH_KEY_WORDS
   max_number = parameter.MAX_NUMBER
   parts = parameter.PARTS
+  if 'LOCATION' in dir(parameter) and 'LOCATION_RADIUS' in dir(parameter):
+    print parameter.LOCATION
+    print parameter.LOCATION_RADIUS
+    youtube_result = main(search_keyword, max_number, parts, location=parameter.LOCATION, location_radius=parameter.LOCATION_RADIUS)
+  else:
+    youtube_result = main(search_keyword, max_number, parts)
 
 
-  youtube_result = main(search_keyword, max_number, parts)
-  print youtube_result
-
-  #result = handle_videos(youtube_result)
-  #csv = result_to_csv(result)
-
-  #for string in result['id']:
-  #  print string
-
-  #print len(csv)
-  #write_csv(handle_filename(search_keyword), csv)
-
+  #youtube_result = main(search_keyword, max_number, parts)
+  #print youtube_result

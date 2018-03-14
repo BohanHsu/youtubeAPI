@@ -14,12 +14,22 @@ def youtube_search(service, options):
 
   # Call the search.list method to retrieve results matching the specified
   # query term.
-  search_response = service.search().list(
-    q=options['q'],
-    type='video',
-    part='id,snippet',
-    maxResults=options['max_results']
-  ).execute()
+  if 'location' in options and 'locationRadius' in options:
+    search_response = service.search().list(
+      q=options['q'],
+      type='video',
+      part='id,snippet',
+      maxResults=options['max_results'],
+      location=options['location'],
+      locationRadius=options['locationRadius']
+    ).execute()
+  else:
+    search_response = service.search().list(
+      q=options['q'],
+      type='video',
+      part='id,snippet',
+      maxResults=options['max_results'],
+    ).execute()
 
   search_videos = []
 
