@@ -7,25 +7,39 @@ import youtube_search_code as youtube_search
 import paths as path
 import parameter as parameter
 
-def main(search_keyword, max_result, parts, location=None, location_radius=None):
-  videos = single_search(search_keyword, max_result, parts)
+#def main(search_keyword, max_result, parts, location=None, location_radius=None):
+def main(filename, **kwargs):
+  videos = single_search(**kwargs)
   result = handle_videos(videos)
   csv = result_to_csv(result)
 
-  write_csv(handle_filename(search_keyword), csv)
-  return handle_filename(search_keyword)
+  #write_csv(handle_filename(search_keyword), csv)
+  write_csv(filename, csv)
+  #return handle_filename(search_keyword)
+  return filename
 
-def single_search(search_keyword, max_result, parts):
+def single_search(**kwargs):
   service = youtube.get_authenticated_service()
-  video_ids = youtube_search.youtube_search(service, {
-    'q': search_keyword, 
-    'max_results': max_result,
-  })
+  
+  #video_ids = youtube_search.youtube_search(service, **{
+  #  'q': search_keyword, 
+  #  'max_results': max_result,
+  #  location=options['location'],
+  #  locationRadius=options['locationRadius']
+  #})
+
+  video_ids = youtube_search.youtube_search(service, **kwargs)
+  if len(video_ids) == 0:
+    return []
+
   videos = youtube_video.videos_list_multiple_ids(service, part=parts, id=video_ids)
+  print len(videos)
   return videos
 
 
 def handle_videos(videos):
+  if len(videos) == 0:
+    return {}
   results = {}
   for p in path.paths:
     results[p] = []
@@ -53,6 +67,9 @@ def result_to_csv(results):
   string = string.encode('utf-8')
   string = string + "\n"
   csv.append(string)
+
+  if not 'id' in results:
+    return csv
   
   count = 0
   while count < len(results['id']):
@@ -146,16 +163,35 @@ def handle_filename(filename):
 
 
 if __name__ == '__main__':
-  search_keyword = parameter.SEARCH_KEY_WORDS
+  filename = parameter.FILE_NAME
+
   max_number = parameter.MAX_NUMBER
   parts = parameter.PARTS
-  if 'LOCATION' in dir(parameter) and 'LOCATION_RADIUS' in dir(parameter):
-    print parameter.LOCATION
-    print parameter.LOCATION_RADIUS
-    youtube_result = main(search_keyword, max_number, parts, location=parameter.LOCATION, location_radius=parameter.LOCATION_RADIUS)
-  else:
-    youtube_result = main(search_keyword, max_number, parts)
+  options = {'maxResults': parameter.MAX_NUMBER}
 
+  dir_parameter = dir(parameter)
 
-  #youtube_result = main(search_keyword, max_number, parts)
-  #print youtube_result
+  if 'LOCATION' in dir_parameter:
+    options['location'] = parameter.LOCATION
+
+  if 'LOCATION_RADIUS' in dir_parameter:
+    options['locationRadius'] = parameter.LOCATION_RADIUS
+
+  if 'SEARCH_KEY_WORDS' in dir_parameter:
+    options['q'] = parameter.SEARCH_KEY_WORDS
+  #{
+  #  'q': search_keyword, 
+  #  'max_results': max_result,
+  #  location=options['location'],
+  #  locationRadius=options['locationRadius']
+  #}
+
+  #  print parameter.LOCATION
+  #  print parameter.LOCATION_RADIUS
+  #SEARCH_KEY_WORDS
+
+  #if 'LOCATION' in dir(parameter) and 'LOCATION_RADIUS' in dir(parameter):
+  #  youtube_result = main(search_keyword, max_number, parts, location=parameter.LOCATION, location_radius=parameter.LOCATION_RADIUS)
+  #else:
+  youtube_result = main(filename, **options)
+  print youtube_result

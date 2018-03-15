@@ -10,26 +10,32 @@
 import argparse
 
 # options must contains q and max_results
-def youtube_search(service, options):
+def youtube_search(service, **kwargs):
+  kwargs['type'] = 'video'
+  kwargs['part'] = 'id,snippet'
 
   # Call the search.list method to retrieve results matching the specified
   # query term.
-  if 'location' in options and 'locationRadius' in options:
-    search_response = service.search().list(
-      q=options['q'],
-      type='video',
-      part='id,snippet',
-      maxResults=options['max_results'],
-      location=options['location'],
-      locationRadius=options['locationRadius']
-    ).execute()
-  else:
-    search_response = service.search().list(
-      q=options['q'],
-      type='video',
-      part='id,snippet',
-      maxResults=options['max_results'],
-    ).execute()
+  search_response = service.search().list(
+    **kwargs
+  ).execute()
+
+  #if 'location' in options and 'locationRadius' in options:
+  #  search_response = service.search().list(
+  #    q=options['q'],
+  #    type='video',
+  #    part='id,snippet',
+  #    maxResults=options['max_results'],
+  #    location=options['location'],
+  #    locationRadius=options['locationRadius']
+  #  ).execute()
+  #else:
+  #  search_response = service.search().list(
+  #    q=options['q'],
+  #    type='video',
+  #    part='id,snippet',
+  #    maxResults=options['max_results'],
+  #  ).execute()
 
   search_videos = []
 
