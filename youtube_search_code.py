@@ -10,7 +10,33 @@
 import argparse
 
 # options must contains q and max_results
-def youtube_search(service, **kwargs):
+def youtube_search(service, number, **kwargs):
+  n = number
+  all_video_ids = []
+  map = {}
+  while n > 0:
+    kwargs[maxResults] = 50
+    [video_ids, page_token] = youtube_search_worker(service, **kwargs)
+    if not page_token is None:
+      kwargs['pageToken'] = page_token
+
+    #all_video_ids.extend(video_ids)
+    for id in video_ids:
+      if not id in map:
+        all_video_ids.append(id)
+        map[id] = True
+
+    if page_token is None:
+      # no more next page?
+      break
+
+    n -= 50
+
+  return all_video_ids
+
+
+
+def youtube_search_worker(service, **kwargs):
   kwargs['type'] = 'video'
   kwargs['part'] = 'id,snippet'
 
@@ -20,31 +46,20 @@ def youtube_search(service, **kwargs):
     **kwargs
   ).execute()
 
-  #if 'location' in options and 'locationRadius' in options:
-  #  search_response = service.search().list(
-  #    q=options['q'],
-  #    type='video',
-  #    part='id,snippet',
-  #    maxResults=options['max_results'],
-  #    location=options['location'],
-  #    locationRadius=options['locationRadius']
-  #  ).execute()
-  #else:
-  #  search_response = service.search().list(
-  #    q=options['q'],
-  #    type='video',
-  #    part='id,snippet',
-  #    maxResults=options['max_results'],
-  #  ).execute()
+  #print search_response
+  #print search_response['nextPageToken']
 
   search_videos = []
 
   # Merge video ids
   for search_result in search_response.get('items', []):
     search_videos.append(search_result['id']['videoId'])
-  video_ids = ','.join(search_videos)
+  #video_ids = ','.join(search_videos)
 
-  return video_ids
+  page_token = None
+  if 'nextPageToken' in search_response:
+    page_token = search_response['nextPageToken']
+  return [search_videos, page_token]
 
   # There is another function for that job, comment out those things
   ## Call the videos.list method to retrieve location details for each video.
